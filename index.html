@@ -283,10 +283,6 @@ function App(){
               label={<span className="inline-flex items-center gap-1">{autoInsurance?<I.shield className="w-4 h-4 text-emerald-600"/>:<I.shield className="w-4 h-4 text-cyan-600"/>}{autoInsurance?"자동 계산값":"보험료"}</span>}
               value={autoInsurance?fmtThousandsStr(String(Math.max(20,(number(priceUSD)*1.1*0.0003)||0))):insuranceUSD}
               onChange={setInsuranceUSD} suffix="USD" formatThousands allowDecimal  disabled={autoInsurance}/>
-          <p className="text-[11px] md:text-xs text-gray-500 mt-1 leading-relaxed">
-            물품가격 × 110% × 0.03% 적용된 값 입니다. <b>(단, MINIMUM. $20 적용)</b><br/>
-            적하보험 진행 시만 포함되며, 보험사 요율에 따라 차이가 있을 수 있습니다.
-          </p>
           </div>
 
           <div className="mt-2">
