@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>케이브릿지 관부가세 계산기 | 예상 수입세액 자동 계산</title>
-  <meta name="description" content="케이브릿지 관부가세 계산기. 물품가격, 운송료, 보험료, 환율, HS CODE 관세율을 입력하면 관세, 부가세, 총 예상 납부세액과 도착원가를 자동 계산합니다."/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>케이브릿지 관부가세 계산기 | 해외직구·기업수입 간편 계산</title>
+  <meta name="description" content="케이브릿지 관부가세 계산기. 해외직구·특송과 기업 수입화물을 간편하게 구분해 예상 관부가세, 총비용, 수입원가를 계산합니다." />
   <link rel="stylesheet" href="https://cdn.tradlinx.com/fonts/pretendard/pretendard-dynamic-subset.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -12,507 +12,352 @@
       --kb-blue:#0f4c81;
       --kb-blue-2:#1565c0;
       --kb-navy:#10243e;
-      --kb-sky:#eaf4ff;
-      --kb-orange:#ff8a3d;
-      --kb-gray:#667085;
-      --kb-line:#dbe4ef;
+      --kb-sky:#edf7ff;
       --kb-bg:#f5f8fc;
-      --kb-white:#ffffff;
-      --kb-shadow:0 18px 45px rgba(16,36,62,.12);
-      --kb-shadow-soft:0 12px 28px rgba(16,36,62,.07);
+      --kb-line:#d9e4f0;
+      --kb-gray:#667085;
+      --kb-green:#027a48;
+      --kb-orange:#b54708;
+      --kb-shadow:0 18px 42px rgba(16,36,62,.10);
     }
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
-    html,body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
     body{
       margin:0;
       font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR","Apple SD Gothic Neo",Arial,sans-serif;
       color:var(--kb-navy);
-      background:
-        radial-gradient(circle at top right,rgba(21,101,192,.12),transparent 28%),
-        linear-gradient(180deg,#fbfdff 0%,var(--kb-bg) 70%,#eef4fb 100%);
-      line-height:1.65;
-      letter-spacing:-.01em;
+      background:linear-gradient(180deg,#fbfdff 0%,var(--kb-bg) 76%,#eef4fb 100%);
+      line-height:1.62;
+      letter-spacing:-.02em;
+      -webkit-font-smoothing:antialiased;
     }
-    a{color:inherit;text-decoration:none}
-    .wrap{max-width:1180px;margin:0 auto;padding-left:18px;padding-right:18px}
-    .kb-page{max-width:1180px;margin:0 auto;padding:28px 18px 0}
-    .kb-topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
-    .kb-brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:-.03em;color:var(--kb-navy)}
-    .kb-brand-mark{width:42px;height:42px;display:grid;place-items:center;color:#fff;font-weight:900;background:linear-gradient(135deg,var(--kb-blue),#2f80ed);box-shadow:0 10px 25px rgba(15,76,129,.22)}
-    .kb-brand-title{font-size:18px}
-    .kb-action-row{display:flex;gap:10px;align-items:center}
-    .kb-mini-btn,.btn{
-      display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
-      border:1px solid #c8d7e8;background:#fff;padding:10px 15px;
-      font-size:14px;font-weight:900;cursor:pointer;color:#0b3f6f;
-      box-shadow:0 8px 18px rgba(16,36,62,.05);
-      transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease;
-      border-radius:0;
-    }
-    .kb-mini-btn:hover,.btn:hover{background:#f4f8fd;transform:translateY(-1px);border-color:#9eb9d6}
-    .kb-mini-btn.primary,.btn-primary{border-color:rgba(15,76,129,.2);background:linear-gradient(135deg,#0b3f6f,#1565c0);color:#fff;box-shadow:0 12px 24px rgba(15,76,129,.22)}
-    .kb-hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#ffffff 0%,#eef7ff 52%,#e8f2ff 100%);border:1px solid var(--kb-line);box-shadow:var(--kb-shadow);padding:44px;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(330px,.95fr);gap:30px}
-    .kb-hero:before{content:"";position:absolute;right:-90px;top:-90px;width:260px;height:260px;background:rgba(21,101,192,.12);border-radius:999px}
-    .kb-hero:after{content:"";position:absolute;right:160px;bottom:-130px;width:280px;height:280px;background:rgba(255,138,61,.10);border-radius:999px}
-    .kb-hero>*{position:relative;z-index:1}
-    .kb-eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;background:#fff;border:1px solid var(--kb-line);color:var(--kb-blue);font-weight:900;font-size:13px;margin-bottom:18px}
-    .kb-hero h1{margin:0;font-size:clamp(22px,2.8vw,32px);line-height:1.28;letter-spacing:-.05em;color:var(--kb-navy);font-weight:950;word-break:keep-all}
-    .kb-hero-copy{margin:16px 0 0;color:#44546a;font-size:16px;max-width:650px;word-break:keep-all}
-    .kb-hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
-    .kb-trust-row{margin-top:28px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-    .kb-trust-card{background:rgba(255,255,255,.88);border:1px solid #d5e0ec;padding:15px;box-shadow:0 8px 18px rgba(16,36,62,.04)}
-    .kb-trust-card strong{display:block;font-size:18px;letter-spacing:-.03em}
-    .kb-trust-card span{color:var(--kb-gray);font-size:13px}
-    .kb-visual-card{background:rgba(255,255,255,.86);border:1px solid var(--kb-line);padding:26px;display:grid;align-content:center;min-height:390px}
-    .kb-route-box{display:grid;gap:12px}
-    .kb-route-item{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #d5e0ec;padding:15px;box-shadow:0 10px 20px rgba(16,36,62,.06)}
-    .kb-icon{width:42px;height:42px;display:grid;place-items:center;background:var(--kb-sky);color:var(--kb-blue);font-size:22px;flex:0 0 auto}
-    .kb-route-item strong{display:block;letter-spacing:-.03em;font-size:15px}
-    .kb-route-item span{display:block;color:var(--kb-gray);font-size:12.5px;line-height:1.45;word-break:keep-all}
-
-    main{padding-top:30px;padding-bottom:70px}
-    .card{background:linear-gradient(180deg,#ffffff 0%,#f9fcff 100%);border:1px solid #d5e0ec;border-radius:0;box-shadow:0 16px 38px rgba(16,36,62,.07)}
-    .calculator-grid{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(340px,.96fr);gap:20px;align-items:start}
-    .sticky-card{position:sticky;top:18px}
-    .kb-section-title{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #edf2f7}
-    .kb-section-title h2{margin:0;font-size:clamp(21px,2.4vw,28px);letter-spacing:-.045em;line-height:1.28;color:var(--kb-navy);font-weight:950}
-    .kb-section-title p{margin:8px 0 0;color:var(--kb-gray);word-break:keep-all;font-size:14px}
-    .kb-mini-guide{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 18px}
-    .kb-mini-guide-card{border:1px solid #d5e0ec;background:#fff;box-shadow:0 10px 24px rgba(16,36,62,.05);padding:16px;display:flex;gap:12px;align-items:flex-start}
-    .kb-mini-guide-card i{font-style:normal;width:36px;height:36px;display:grid;place-items:center;background:#eef7ff;color:#0f4c81;flex:0 0 auto;font-size:18px;font-weight:900}
-    .kb-mini-guide-card strong{display:block;font-size:14px;letter-spacing:-.03em}
-    .kb-mini-guide-card span{display:block;font-size:12px;color:var(--kb-gray);line-height:1.45;margin-top:2px;word-break:keep-all}
-    .input-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-    .input-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
-    .field label,.field-title{display:block;font-size:12px;font-weight:950;color:#26384f;margin-bottom:5px}
-    .input,.select{width:100%;border-radius:0;border:1px solid #cdd8e6;background:#fff;color:var(--kb-navy);font-family:inherit;box-shadow:none;height:38px;min-height:38px;padding:7px 10px;font-size:14px;outline:none}
-    .input:focus,.select:focus{border-color:var(--kb-blue-2);box-shadow:0 0 0 3px rgba(21,101,192,.10)}
-    .input[disabled]{background:#f6f8fb;color:#667085}
-    .field-row{display:flex;align-items:center;gap:8px}
-    .field-row .input{flex:1;text-align:right;font-variant-numeric:tabular-nums}
-    .suffix{font-size:12px;color:#667085;font-weight:900;white-space:nowrap}
-    .fx-tools{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:8px;align-items:center}
-    .fx-status{font-size:11.5px;color:#667085;line-height:1.45;word-break:keep-all}
-    .fx-status.ok{color:#027a48;font-weight:800}
-    .fx-status.warn{color:#b54708;font-weight:800}
-    .fx-service-key{margin-top:8px;display:grid;grid-template-columns:1fr;gap:6px}
-    .fx-service-key .input{height:34px;min-height:34px;font-size:12px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
-    .toggle-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-    .check{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:#334155;word-break:keep-all}
-    .check input{width:16px;height:16px}
-    .badge{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;background:#eef7ff;color:#0f4c81;border:1px solid #c9dff5;font-size:12px;font-weight:900}
-    .badge.ok{background:#ecfdf3;color:#027a48;border-color:#abefc6}
-    .badge.warn{background:#fffaeb;color:#b54708;border-color:#fedf89}
-    .summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-    .summary-card{border:1px solid #d5e0ec;background:linear-gradient(180deg,#eef7ff,#ffffff);box-shadow:0 10px 24px rgba(15,76,129,.06);padding:18px 16px}
-    .summary-card.wide{grid-column:1/-1;background:linear-gradient(135deg,#0b3f6f,#1565c0);color:#fff;border-color:rgba(15,76,129,.2);box-shadow:0 14px 30px rgba(15,76,129,.22)}
-    .summary-label{font-size:12px;color:var(--kb-blue);font-weight:950;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
-    .summary-card.wide .summary-label{color:#eaf4ff}
-    .label-icon{width:30px;height:30px;display:grid;place-items:center;background:#fff;border:1px solid #c9dff5;color:var(--kb-blue);font-size:11px;font-weight:950}
-    .summary-value{margin-top:8px;font-size:26px;line-height:1.05;font-weight:950;letter-spacing:-.055em;color:var(--kb-navy);word-break:break-all}
-    .summary-card.wide .summary-value{color:#fff}
-    .summary-sub{margin-top:7px;color:var(--kb-gray);font-size:12px;line-height:1.45;word-break:keep-all}
-    .summary-card.wide .summary-sub{color:#dff0ff}
-    .notice{border:1px solid #d5e0ec;background:#fff;padding:14px;margin-top:12px}
-    .notice summary{cursor:pointer;color:#0f4c81;font-weight:950}
-    .notice ul,.notice ol{margin-top:12px;color:#44546a;font-size:13px;line-height:1.75;word-break:keep-all}
-    .hs-wrap{position:relative}
-    .hs-list{display:none;position:absolute;z-index:30;left:0;right:0;top:43px;max-height:250px;overflow:auto;background:#fff;border:1px solid #d5e0ec;box-shadow:0 16px 36px rgba(16,36,62,.12)}
-    .hs-list.open{display:block}
-    .hs-list button{display:block;width:100%;text-align:left;padding:10px 12px;border:0;background:#fff;cursor:pointer}
-    .hs-list button:hover{background:#eef7ff}
-    .divider{height:1px;background:#edf2f7;margin:18px 0}
-    .help-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-    .mobile-note{display:none;color:#667085;font-size:12px;word-break:keep-all}
-    footer{color:#98a2b3;font-size:12px;text-align:center;padding-bottom:24px}
-
-
-
-    /* === v5: compact tabs/fields + readable FX panel === */
-    .kb-mini-btn,.btn{min-height:36px;padding:8px 13px;font-size:13px;line-height:1.15;box-shadow:0 6px 14px rgba(16,36,62,.045)}
-    .input-grid{gap:11px 12px}
-    .input-grid.three{gap:11px 12px}
-    .field label,.field-title{font-size:11.5px;margin-bottom:4px;line-height:1.25}
-    .input,.select{height:34px;min-height:34px;padding:6px 9px;font-size:13.5px;line-height:1.2}
-    .field-row{gap:6px}
-    .suffix{font-size:11.5px;min-width:32px;text-align:left}
-    .divider{margin:15px 0}
-    .check{font-size:12.5px;gap:7px}
-    .check input{width:15px;height:15px}
-    .kb-mini-guide-card{padding:13px;gap:10px}
-    .kb-mini-guide-card i{width:32px;height:32px;font-size:15px}
-    .kb-mini-guide-card strong{font-size:13px}
-    .kb-mini-guide-card span{font-size:11.5px}
-    .summary-card{padding:15px 14px}
-    .summary-value{font-size:24px}
-    .fx-panel{margin-top:7px;border:1px solid #dbe4ef;background:#fbfdff;padding:9px 10px;display:grid;gap:7px}
-    .fx-chip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:950;color:#0b3f6f;letter-spacing:-.02em}
-    .fx-chip i{font-style:normal;width:20px;height:20px;display:grid;place-items:center;background:#eef7ff;border:1px solid #d9e7f8;color:#0f4c81;font-size:11px}
-    .fx-tools{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;margin-top:0}
-    .fx-status{display:flex;align-items:center;min-height:32px;padding:7px 9px;background:#fff;border:1px solid #dbe4ef;font-size:11.5px;color:#526172;line-height:1.35;word-break:keep-all}
-    .fx-status.ok{background:#f2fbf6;border-color:#b7e6ca;color:#027a48;font-weight:800}
-    .fx-status.warn{background:#fff9f2;border-color:#f3d1a8;color:#b54708;font-weight:800}
-    .fx-help{display:none}
-
-    /* === v7: inline FX lookup - removes empty left space === */
-    .input-grid.top-inputs{align-items:start}
-    .fx-field{min-width:0}
-    .fx-rate-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px;align-items:center}
-    .fx-rate-row .suffix{min-width:auto;padding:0 2px;font-size:11.5px;font-weight:900;color:#667085}
-    .fx-rate-row .btn{min-height:34px;height:34px;padding:7px 12px;white-space:nowrap;box-shadow:none;border-color:#b9cee5;background:#fff;color:#0b3f6f}
-    .fx-inline-status{display:block;margin-top:6px;font-size:11.5px;line-height:1.35;color:#667085;word-break:keep-all}
-    .fx-inline-status.ok{color:#027a48;font-weight:800}
-    .fx-inline-status.warn{color:#b54708;font-weight:800}
-    .fx-panel{display:none !important}
-
-    @media(max-width:1000px){
-      .kb-hero{grid-template-columns:1fr;padding:38px 26px}
-      .kb-visual-card{min-height:auto}
-      .calculator-grid{grid-template-columns:1fr}
-      .sticky-card{position:static}
-      .kb-mini-guide,.help-grid{grid-template-columns:1fr}
-    }
-    @media(max-width:768px){
-      .kb-page{padding:16px 12px 0}
-      .wrap{padding-left:12px;padding-right:12px}
-      .kb-topbar{align-items:flex-start;flex-direction:column;gap:10px;margin-bottom:12px}
-      .kb-brand-mark{width:36px;height:36px;font-size:13px}
-      .kb-brand-title{font-size:15px;line-height:1.25}
-      .kb-action-row{width:100%;display:grid;grid-template-columns:1fr}
-      .kb-mini-btn,.btn{width:100%;text-align:center;min-height:38px;padding:8px 10px;font-size:12.5px}
-      .kb-hero{padding:22px 14px;gap:18px;box-shadow:0 12px 26px rgba(16,36,62,.08)}
-      .kb-hero:before{width:180px;height:180px;right:-80px;top:-85px}
-      .kb-hero:after{display:none}
-      .kb-eyebrow{font-size:12px;padding:5px 9px;margin-bottom:12px}
-      .kb-hero h1{font-size:19px;line-height:1.34;letter-spacing:-.04em}
-      .kb-hero-copy{font-size:13.5px;line-height:1.62;margin-top:10px}
-      .kb-hero-actions{display:grid;grid-template-columns:1fr;margin-top:16px;gap:8px}
-      .kb-trust-row{grid-template-columns:1fr;margin-top:14px;gap:8px}
-      .kb-trust-card{padding:11px 12px}
-      .kb-trust-card strong{font-size:14px}
-      .kb-trust-card span{font-size:11.5px}
-      .kb-visual-card{padding:14px}
-      .kb-route-box{gap:8px}
-      .kb-route-item{padding:11px;gap:10px;align-items:flex-start}
-      .kb-icon{width:34px;height:34px;font-size:17px}
-      .kb-route-item strong{font-size:13px}
-      .kb-route-item span{font-size:11.5px;line-height:1.4}
-      main{padding-top:18px;padding-bottom:48px}
-      section.card{padding:16px 12px !important}
-      .kb-section-title{margin-bottom:14px;padding-bottom:12px;gap:8px;align-items:flex-start;flex-direction:column}
-      .kb-section-title h2{font-size:20px;line-height:1.3}
-      .kb-section-title p{font-size:12.5px;line-height:1.55;margin-top:5px}
-      .kb-mini-guide{gap:8px;margin-bottom:12px}
-      .kb-mini-guide-card{padding:11px;gap:9px;box-shadow:none}
-      .kb-mini-guide-card i{width:30px;height:30px;font-size:14px}
-      .kb-mini-guide-card strong{font-size:12.5px}
-      .kb-mini-guide-card span{font-size:11.5px;line-height:1.4}
-      .input-grid,.input-grid.three{grid-template-columns:1fr;gap:10px}
-      .input,.select{height:36px;min-height:36px;font-size:16px}
-      .field-row{align-items:stretch}
-      .summary-grid{grid-template-columns:1fr;gap:8px}
-      .summary-card{padding:14px 12px}
-      .summary-value{font-size:24px}
-      .help-grid{grid-template-columns:1fr;gap:10px}
-      .notice{padding:12px}
-      .notice ul,.notice ol{font-size:12px}
-      .mobile-note{display:block}
-      .hs-list{top:41px;max-height:210px}
-      .field label,.field-title{font-size:11.5px}
-      .fx-tools{grid-template-columns:1fr}
-      .fx-tools .btn{min-height:34px}
-      .fx-service-key .input{font-size:12px}
-      .input-grid,.input-grid.three{gap:8px}
-      .input,.select{height:34px;min-height:34px;font-size:15px;padding:5px 8px}
-      .field-row{gap:5px}
-      .suffix{font-size:11px;min-width:30px}
-      .btn{min-height:34px;padding:7px 9px;font-size:12px}
-      .fx-panel{padding:8px 9px;gap:7px;margin-top:6px}
-      .fx-chip{font-size:11px}
-      .fx-chip i{width:18px;height:18px;font-size:10px}
-      .fx-tools{grid-template-columns:1fr;gap:7px}
-      .fx-tools .btn{min-height:33px}
-      .fx-status{min-height:32px;font-size:11.5px;padding:7px 8px}
-      .fx-rate-row{grid-template-columns:minmax(0,1fr) auto;gap:6px}
-      .fx-rate-row .btn{grid-column:1 / -1;width:100%;height:33px;min-height:33px}
-      .fx-inline-status{font-size:11px;margin-top:5px}
-    }
+    a{text-decoration:none;color:inherit}
+    .wrap{max-width:1120px;margin:0 auto;padding:0 18px}
+    .page{max-width:1120px;margin:0 auto;padding:26px 18px 0}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:18px}
+    .brand{display:flex;align-items:center;gap:11px;font-weight:950;color:var(--kb-navy)}
+    .brand-mark{width:40px;height:40px;display:grid;place-items:center;background:linear-gradient(135deg,#0b3f6f,#1565c0);color:#fff;font-size:14px;font-weight:950;box-shadow:0 10px 24px rgba(15,76,129,.22)}
+    .brand-title{font-size:17px;letter-spacing:-.04em}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid #c7d7e8;background:#fff;color:#0b3f6f;padding:10px 15px;min-height:38px;font-size:13px;font-weight:950;cursor:pointer;border-radius:0;transition:.16s ease;white-space:nowrap}
+    .btn:hover{background:#f5f9fd;border-color:#9bb7d4;transform:translateY(-1px)}
+    .btn-primary{background:linear-gradient(135deg,#0b3f6f,#1565c0);border-color:#0f4c81;color:#fff;box-shadow:0 12px 24px rgba(15,76,129,.22)}
+    .hero{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:26px;align-items:stretch;padding:40px;background:linear-gradient(135deg,#fff 0%,#f1f8ff 58%,#eaf4ff 100%);border:1px solid var(--kb-line);box-shadow:var(--kb-shadow)}
+    .hero:before{content:"";position:absolute;right:-110px;top:-110px;width:260px;height:260px;border-radius:999px;background:rgba(21,101,192,.10)}
+    .hero>*{position:relative;z-index:1}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;background:#fff;border:1px solid var(--kb-line);color:var(--kb-blue);font-weight:950;font-size:13px;margin-bottom:16px}
+    .hero h1{margin:0;font-size:clamp(23px,3vw,34px);line-height:1.26;letter-spacing:-.055em;font-weight:950;word-break:keep-all}
+    .hero p{margin:15px 0 0;color:#43546a;font-size:15px;max-width:650px;word-break:keep-all}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+    .simple-card{background:rgba(255,255,255,.90);border:1px solid #d5e0ec;padding:22px;display:grid;gap:12px;align-content:center}
+    .simple-step{display:flex;align-items:flex-start;gap:11px;background:#fff;border:1px solid #dce6f1;padding:12px;box-shadow:0 8px 18px rgba(16,36,62,.045)}
+    .step-num{width:30px;height:30px;display:grid;place-items:center;background:#eef7ff;color:#0f4c81;font-weight:950;flex:0 0 auto}
+    .simple-step strong{display:block;font-size:13.5px;line-height:1.3}.simple-step span{display:block;font-size:12px;color:var(--kb-gray);line-height:1.42;margin-top:2px;word-break:keep-all}
+    main{padding:28px 0 62px}
+    .calculator-grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:20px;align-items:start}
+    .card{background:#fff;border:1px solid #d5e0ec;box-shadow:0 16px 38px rgba(16,36,62,.07);border-radius:0}
+    .section{padding:22px}
+    .section-title{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid #edf2f7}
+    .section-title h2{margin:0;font-size:24px;line-height:1.28;letter-spacing:-.05em;font-weight:950}
+    .section-title p{margin:6px 0 0;font-size:13px;color:var(--kb-gray);word-break:keep-all}
+    .badge{display:inline-flex;align-items:center;justify-content:center;border:1px solid #c9dff5;background:#eef7ff;color:#0f4c81;padding:6px 10px;font-size:12px;font-weight:950;white-space:nowrap}
+    .badge.ok{background:#ecfdf3;color:#027a48;border-color:#abefc6}.badge.warn{background:#fffaeb;color:#b54708;border-color:#fedf89}
+    .mode-chooser{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+    .mode-btn{border:1px solid #cdd8e6;background:#fff;text-align:left;padding:15px;cursor:pointer;display:flex;gap:12px;align-items:flex-start;box-shadow:0 8px 18px rgba(16,36,62,.04)}
+    .mode-btn:hover{background:#f8fbff;border-color:#9eb9d6}.mode-btn.active{background:linear-gradient(180deg,#eef7ff,#fff);border-color:#0f4c81;box-shadow:0 14px 28px rgba(15,76,129,.12)}
+    .mode-btn>.mode-icon{width:36px;height:36px;display:grid;place-items:center;background:#eef7ff;color:#0f4c81;flex:0 0 auto;line-height:0;margin-top:0}.mode-icon svg{width:22px;height:22px;display:block}
+    .mode-btn strong{display:block;font-size:15px;line-height:1.25;letter-spacing:-.04em}.mode-btn span{display:block;font-size:12px;color:#667085;line-height:1.42;margin-top:4px;word-break:keep-all}
+    .easy-note{display:flex;gap:10px;align-items:flex-start;border:1px solid #d5e0ec;background:#fbfdff;padding:13px;margin-bottom:16px}
+    .easy-note i{font-style:normal;width:28px;height:28px;display:grid;place-items:center;background:#eef7ff;color:#0f4c81;font-weight:950;flex:0 0 auto}.easy-note p{margin:0;color:#526172;font-size:13px;word-break:keep-all}
+    .field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field-grid.one{grid-template-columns:1fr}.field-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .field-title{display:block;font-size:12px;font-weight:950;color:#26384f;margin-bottom:5px}.required{color:#1565c0}
+    .input,.select{width:100%;height:38px;min-height:38px;border:1px solid #cdd8e6;background:#fff;color:#10243e;border-radius:0;padding:7px 10px;font-family:inherit;font-size:14px;outline:none}
+    .input:focus,.select:focus{border-color:#1565c0;box-shadow:0 0 0 3px rgba(21,101,192,.10)}
+    .row-input{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:center}.row-input.three{grid-template-columns:minmax(0,1fr) auto auto}.row-input .input{text-align:right;font-variant-numeric:tabular-nums}.suffix{font-size:12px;color:#667085;font-weight:900;white-space:nowrap}
+    .help-text{margin:6px 0 0;color:#667085;font-size:11.5px;line-height:1.42;word-break:keep-all}
+    .quick-categories{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.cat-btn{border:1px solid #d5e0ec;background:#fff;padding:9px 8px;font-size:12px;font-weight:900;color:#334155;cursor:pointer}.cat-btn:hover,.cat-btn.active{border-color:#0f4c81;background:#eef7ff;color:#0b3f6f}
+    .calc-action{margin-top:18px;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}.calc-action .muted{font-size:12px;color:#667085;word-break:keep-all}
+    .advanced{margin-top:16px;border:1px solid #d5e0ec;background:#fbfdff}.advanced summary{cursor:pointer;padding:14px 15px;font-weight:950;color:#0b3f6f}.advanced-body{padding:0 15px 15px;border-top:1px solid #e6edf5}.advanced-title{margin:14px 0 9px;font-size:13px;font-weight:950;color:#26384f}.divider{height:1px;background:#edf2f7;margin:14px 0}.hidden{display:none!important}
+    .sticky{position:sticky;top:18px}.result-main{background:linear-gradient(135deg,#0b3f6f,#1565c0);color:#fff;padding:20px;border:1px solid rgba(15,76,129,.25);box-shadow:0 14px 30px rgba(15,76,129,.22)}
+    .result-label{margin:0;font-size:13px;font-weight:900;color:#dff0ff}.result-value{margin:7px 0 0;font-size:32px;line-height:1.08;font-weight:950;letter-spacing:-.06em;word-break:break-all}.result-sub{margin:8px 0 0;font-size:12.5px;color:#dff0ff;word-break:keep-all}
+    .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.result-card{border:1px solid #d5e0ec;background:linear-gradient(180deg,#eef7ff,#fff);padding:14px}.result-card strong{display:block;font-size:12px;color:#0f4c81}.result-card b{display:block;margin-top:6px;font-size:21px;line-height:1.1;letter-spacing:-.04em;word-break:break-all}.result-card span{display:block;margin-top:6px;font-size:11.5px;color:#667085;line-height:1.42;word-break:keep-all}
+    .detail{border:1px solid #d5e0ec;background:#fff;margin-top:12px}.detail summary{padding:13px 14px;cursor:pointer;font-weight:950;color:#0f4c81}.detail-body{padding:0 14px 14px;border-top:1px solid #edf2f7}.line{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px dashed #e5edf5;font-size:13px}.line:last-child{border-bottom:0}.line span:first-child{color:#667085}.line span:last-child{font-weight:900;text-align:right}
+    .cta-box{margin-top:12px;border:1px solid #c9dff5;background:#f3f9ff;padding:14px}.cta-box strong{display:block;font-size:14px}.cta-box p{margin:5px 0 12px;font-size:12px;color:#526172;word-break:keep-all}
+    .guide{margin-top:20px}.guide-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.guide-card{border:1px solid #d5e0ec;background:#fff;padding:16px}.guide-card strong{display:block;font-size:14px}.guide-card p{margin:6px 0 0;font-size:12.5px;color:#526172;word-break:keep-all}
+    .fx-status{display:block;margin-top:6px;font-size:11.5px;color:#667085;line-height:1.35}.fx-status.ok{color:#027a48;font-weight:850}.fx-status.warn{color:#b54708;font-weight:850}
+    .hs-wrap{position:relative}.hs-list{display:none;position:absolute;z-index:30;top:41px;left:0;right:0;max-height:230px;overflow:auto;background:#fff;border:1px solid #d5e0ec;box-shadow:0 14px 32px rgba(16,36,62,.12)}.hs-list.open{display:block}.hs-list button{display:block;width:100%;border:0;background:#fff;text-align:left;padding:10px 12px;cursor:pointer}.hs-list button:hover{background:#eef7ff}
+    footer{text-align:center;color:#98a2b3;font-size:12px;padding:0 0 24px}
+    @media(max-width:980px){.hero{grid-template-columns:1fr;padding:30px}.simple-card{padding:18px}.calculator-grid{grid-template-columns:1fr}.sticky{position:static}.guide-grid{grid-template-columns:1fr}}
+    @media(max-width:720px){.page{padding:16px 12px 0}.wrap{padding:0 12px}.topbar{flex-direction:column;align-items:flex-start;gap:10px}.brand-mark{width:36px;height:36px}.brand-title{font-size:15px}.topbar .btn{width:100%}.hero{padding:22px 14px}.eyebrow{font-size:12px;padding:5px 9px;margin-bottom:12px}.hero h1{font-size:20px;line-height:1.34}.hero p{font-size:13.5px;line-height:1.58}.hero-actions{display:grid;grid-template-columns:1fr;margin-top:16px}.simple-card{padding:12px}.section{padding:16px 12px}.section-title{flex-direction:column;align-items:flex-start;gap:8px;margin-bottom:14px}.section-title h2{font-size:20px}.section-title p{font-size:12.5px}.mode-chooser{grid-template-columns:1fr;gap:8px}.mode-btn{padding:12px}.mode-btn>.mode-icon{width:31px;height:31px}.mode-icon svg{width:19px;height:19px}.field-grid,.field-grid.three{grid-template-columns:1fr;gap:10px}.input,.select{height:36px;min-height:36px;font-size:15px}.quick-categories{grid-template-columns:repeat(2,1fr)}.calc-action{grid-template-columns:1fr}.result-value{font-size:28px}.result-grid{grid-template-columns:1fr}.btn{width:100%;min-height:38px}.row-input.three{grid-template-columns:minmax(0,1fr) auto}.row-input.three .btn{grid-column:1/-1}.hs-list{top:39px}}
   </style>
 </head>
 <body>
-  <div class="kb-page">
-    <header class="kb-topbar">
-      <a href="#calculator" class="kb-brand" aria-label="케이브릿지 관부가세 계산기">
-        <span class="kb-brand-mark">KB</span>
-        <span class="kb-brand-title">케이브릿지(주) 관부가세 계산기</span>
+  <div class="page">
+    <header class="topbar">
+      <a href="#calculator" class="brand" aria-label="케이브릿지 관부가세 계산기">
+        <span class="brand-mark">KB</span>
+        <span class="brand-title">케이브릿지(주) 관부가세 계산기</span>
       </a>
-      <div class="kb-action-row">
-        <a class="kb-mini-btn primary" href="#calculator">계산기 바로가기</a>
-      </div>
+      <a class="btn btn-primary" href="#calculator">간편 계산하기</a>
     </header>
 
-    <section class="kb-hero" id="top">
+    <section class="hero">
       <div>
-        <div class="kb-eyebrow">🧾 관세 · 부가세 · 도착원가 자동 계산</div>
-        <h1>수입 물품의 예상 세액과<br />도착원가를 한 화면에서 확인하세요.</h1>
-        <p class="kb-hero-copy">
-          물품가격, 운송료, 보험료, 유니패스 USD 과세환율, HS CODE 관세율을 입력하면 CIF, 관세, 부가세, 총 예상 납부세액을 빠르게 계산합니다.
-        </p>
-        <div class="kb-hero-actions">
-          <a href="#calculator" class="btn btn-primary">관부가세 계산하기</a>
-          <a href="#guide" class="btn">사용방법 보기</a>
-        </div>
-        <div class="kb-trust-row">
-          <div class="kb-trust-card"><strong>CIF</strong><span>물품가·운임·보험료 합산</span></div>
-          <div class="kb-trust-card"><strong>HS CODE</strong><span>대표 코드 관세율 빠른 적용</span></div>
-          <div class="kb-trust-card"><strong>Tax</strong><span>관세·부가세·도착원가 요약</span></div>
+        <div class="eyebrow">🧾 해외직구 · 특송 · 기업수입 간편 계산</div>
+        <h1>어려운 수입세금 계산,<br />필수 정보만 입력하고 확인하세요.</h1>
+        <p>처음 화면에는 꼭 필요한 항목만 보여주고, 환율·보험료·HS CODE·부대비용 같은 항목은 상세 설정 안에 정리했습니다.</p>
+        <div class="hero-actions">
+          <a href="#calculator" class="btn btn-primary">계산 유형 선택하기</a>
+          <a href="#guide" class="btn">계산 기준 보기</a>
         </div>
       </div>
-
-      <aside class="kb-visual-card" aria-label="관부가세 계산 흐름">
-        <div class="kb-route-box">
-          <div class="kb-route-item"><div class="kb-icon">🌍</div><div><strong>원산지 선택</strong><span>미국 USD 200, 그 외 국가 USD 150 기준으로 면세 여부를 확인합니다.</span></div></div>
-          <div class="kb-route-item"><div class="kb-icon">💱</div><div><strong>환율 입력</strong><span>유니패스 USD 수입 과세환율을 자동 조회하고, 실패 시 직접 입력할 수 있습니다.</span></div></div>
-          <div class="kb-route-item"><div class="kb-icon">🔎</div><div><strong>HS CODE 적용</strong><span>대표 HS CODE를 검색하거나 관세율을 직접 입력할 수 있습니다.</span></div></div>
-          <div class="kb-route-item"><div class="kb-icon">📊</div><div><strong>세액 요약</strong><span>관세, 부가세, 총 세액, 도착원가를 카드형 결과로 보여줍니다.</span></div></div>
-        </div>
+      <aside class="simple-card" aria-label="간편 계산 흐름">
+        <div class="simple-step"><span class="step-num">1</span><div><strong>수입 유형 선택</strong><span>해외직구 계산 또는 기업수입 계산을 먼저 선택합니다.</span></div></div>
+        <div class="simple-step"><span class="step-num">2</span><div><strong>필수 금액 입력</strong><span>물품가격과 운송료, 품목 정도만 먼저 입력합니다.</span></div></div>
+        <div class="simple-step"><span class="step-num">3</span><div><strong>예상 금액 확인</strong><span>예상 관부가세와 총비용을 간단히 확인합니다.</span></div></div>
       </aside>
     </section>
   </div>
 
   <main id="calculator" class="wrap">
     <div class="calculator-grid">
-      <section class="card p-5 md:p-6">
-        <div class="kb-section-title">
+      <section class="card section">
+        <div class="section-title">
           <div>
-            <h2>수입 정보 입력</h2>
-            <p>원산지, 환율, 물품가격, 운송료, 보험료와 세율을 입력하세요.</p>
+            <h2>간편 입력</h2>
+            <p id="leadText">먼저 어떤 수입인지 선택하세요. 복잡한 항목은 아래 상세 설정에 넣었습니다.</p>
           </div>
-          <span id="taxStatus" class="badge">계산 대기</span>
+          <span id="statusBadge" class="badge">계산 대기</span>
         </div>
 
-        <div class="kb-mini-guide" aria-label="관부가세 계산기 핵심 기능">
-          <div class="kb-mini-guide-card"><i>①</i><div><strong>국가별 면세 기준</strong><span>미국/그 외 국가 기준으로 면세 추정을 자동 표시합니다.</span></div></div>
-          <div class="kb-mini-guide-card"><i>②</i><div><strong>보험 자동계산</strong><span>물품가격 × 110% × 0.03%, 최소 USD 20 기준입니다.</span></div></div>
-          <div class="kb-mini-guide-card"><i>③</i><div><strong>결과 카드 요약</strong><span>CIF, 관세, 부가세, 도착원가를 한눈에 확인합니다.</span></div></div>
+        <div class="mode-chooser" role="tablist" aria-label="계산 유형 선택">
+          <button id="modeExpress" class="mode-btn active" type="button" data-mode="express" role="tab" aria-selected="true">
+            <span class="mode-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 3 19 7v10l-7 4-7-4V7l7-4Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                <path d="M12 3v8m0 0 7-4m-7 4L5 7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span><strong>해외직구 계산</strong><span>개인 구매 · 해외쇼핑몰 · 특송화물</span></span>
+          </button>
+          <button id="modeBusiness" class="mode-btn" type="button" data-mode="business" role="tab" aria-selected="false">
+            <span class="mode-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3.5" y="10" width="7" height="7" stroke="currentColor" stroke-width="1.6"/>
+                <rect x="13.5" y="10" width="7" height="7" stroke="currentColor" stroke-width="1.6"/>
+                <rect x="8.5" y="4" width="7" height="7" stroke="currentColor" stroke-width="1.6"/>
+              </svg>
+            </span>
+            <span><strong>기업수입 계산</strong><span>사업자 수입 · 정식 수입신고 · 무역화물</span></span>
+          </button>
         </div>
 
-        <div class="input-grid top-inputs">
-          <label class="field">
-            <span class="field-title">원산지/발송국가</span>
+        <div id="modeNotice" class="easy-note">
+          <i>TIP</i>
+          <p>해외직구는 면세 가능 여부를 함께 보여주고, 기업수입은 예상 수입원가와 개당 원가를 중심으로 보여줍니다.</p>
+        </div>
+
+        <div class="field-grid">
+          <label class="field" id="originField">
+            <span class="field-title">발송국가 <span class="required">*</span></span>
             <select id="origin" class="select">
-              <option value="US" data-threshold="200">미국(US) · 면세 USD 200</option>
-              <option value="CN" data-threshold="150">중국(CN) · 면세 USD 150</option>
-              <option value="JP" data-threshold="150">일본(JP) · 면세 USD 150</option>
-              <option value="EU" data-threshold="150">유럽연합(EU) · 면세 USD 150</option>
-              <option value="VN" data-threshold="150">베트남(VN) · 면세 USD 150</option>
-              <option value="OTHER" data-threshold="150">기타 국가 · 면세 USD 150</option>
+              <option value="US" data-threshold="200">미국 · 면세 기준 USD 200</option>
+              <option value="CN" data-threshold="150">중국 · 면세 기준 USD 150</option>
+              <option value="JP" data-threshold="150">일본 · 면세 기준 USD 150</option>
+              <option value="EU" data-threshold="150">유럽 · 면세 기준 USD 150</option>
+              <option value="OTHER" data-threshold="150">기타 국가 · 면세 기준 USD 150</option>
             </select>
           </label>
 
-          <label class="field fx-field">
-            <span class="field-title">USD 과세환율</span>
-            <div class="fx-rate-row">
-              <input id="exchangeRate" class="input" type="text" inputmode="decimal" value="" placeholder="자동 조회 중"/>
-              <span class="suffix">KRW</span>
-              <button id="loadFxBtn" class="btn" type="button">자동조회</button>
-            </div>
-            <span id="fxStatus" class="fx-inline-status">관세환율을 불러오는 중입니다.</span>
+          <label class="field" id="incotermsField">
+            <span class="field-title">거래조건</span>
+            <select id="incoterms" class="select">
+              <option value="FOB">FOB · 물품가 + 운송료 별도</option>
+              <option value="CIF">CIF · 운송료/보험료 포함</option>
+              <option value="EXW">EXW · 공장출고 조건</option>
+              <option value="CFR">CFR · 보험료 별도</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span id="priceLabel" class="field-title">물품가격 <span class="required">*</span></span>
+            <div class="row-input"><input id="priceUSD" class="input" type="text" inputmode="decimal" value="0" /><span class="suffix">USD</span></div>
+            <p id="priceHelp" class="help-text">해외 쇼핑몰 결제금액 또는 인보이스 금액을 입력하세요.</p>
+          </label>
+
+          <label class="field">
+            <span id="freightLabel" class="field-title">배송비/운송료 <span class="required">*</span></span>
+            <div class="row-input"><input id="freightUSD" class="input" type="text" inputmode="decimal" value="0" /><span class="suffix">USD</span></div>
           </label>
         </div>
-
-        <p class="mobile-note mt-2">모바일에서는 입력칸을 1열로 길게 배치해 터치 입력이 편하도록 최적화했습니다.</p>
 
         <div class="divider"></div>
 
-        <div class="input-grid three">
-          <label class="field">
-            <span class="field-title">물품가격</span>
-            <div class="field-row"><input id="priceUSD" class="input" type="text" inputmode="decimal" value="0"/><span class="suffix">USD</span></div>
-          </label>
-          <label class="field">
-            <span class="field-title">운송료</span>
-            <div class="field-row"><input id="freightUSD" class="input" type="text" inputmode="decimal" value="0"/><span class="suffix">USD</span></div>
-          </label>
-          <label class="field">
-            <span id="insuranceLabel" class="field-title">보험료 자동 계산값</span>
-            <div class="field-row"><input id="insuranceUSD" class="input" type="text" inputmode="decimal" value="20" disabled/><span class="suffix">USD</span></div>
-          </label>
-        </div>
-
-        <label class="check mt-3">
-          <input id="autoInsurance" type="checkbox" checked/>
-          <span>보험 자동계산 사용(최소 $20)</span>
+        <label class="field">
+          <span class="field-title">품목 선택</span>
+          <select id="category" class="select">
+            <option value="8" data-hs="8504403010" data-name="일반 전자제품">일반 전자제품 · 관세율 8%</option>
+            <option value="0" data-hs="8517130000" data-name="스마트폰/노트북">스마트폰/노트북 · 관세율 0%</option>
+            <option value="13" data-hs="6109101000" data-name="의류/신발류">의류/신발류 · 관세율 13%</option>
+            <option value="8" data-hs="3304991000" data-name="화장품/생활용품">화장품/생활용품 · 관세율 8%</option>
+            <option value="8" data-hs="3926909000" data-name="기타 일반 제품">기타 일반 제품 · 관세율 8%</option>
+            <option value="custom" data-hs="" data-name="직접 입력">직접 입력 / HS CODE 검색</option>
+          </select>
+          <p id="categoryHelp" class="help-text">정확한 신고 전에는 실제 HS CODE와 관세율 확인이 필요합니다.</p>
         </label>
-        <p class="text-[12px] text-gray-500 mt-1">물품가격 × 110% × 0.03% 적용. 적하보험 진행 시만 포함되며, 보험사 요율에 따라 달라질 수 있습니다.</p>
 
-        <div class="mt-4 input-grid three">
+        <div class="quick-categories" aria-label="빠른 품목 선택">
+          <button type="button" class="cat-btn" data-rate="0" data-hs="8517130000" data-name="스마트폰/노트북">전자 0%</button>
+          <button type="button" class="cat-btn" data-rate="8" data-hs="3304991000" data-name="화장품/생활용품">화장품 8%</button>
+          <button type="button" class="cat-btn" data-rate="13" data-hs="6109101000" data-name="의류/신발류">의류 13%</button>
+          <button type="button" class="cat-btn" data-rate="8" data-hs="3926909000" data-name="기타 일반 제품">기타 8%</button>
+        </div>
+
+        <div id="businessQuick" class="field-grid hidden" style="margin-top:14px">
           <label class="field">
-            <span class="field-title">관세율</span>
-            <div class="field-row"><input id="dutyRate" class="input" type="text" inputmode="decimal" value="8"/><span class="suffix">%</span></div>
+            <span class="field-title">수량</span>
+            <div class="row-input"><input id="quantity" class="input" type="text" inputmode="numeric" value="1" /><span class="suffix">개</span></div>
+            <p class="help-text">개당 예상 원가가 필요할 때 입력하세요.</p>
           </label>
           <label class="field">
-            <span class="field-title">부가세율</span>
-            <div class="field-row"><input id="vatRate" class="input" type="text" inputmode="decimal" value="10"/><span class="suffix">%</span></div>
-          </label>
-          <label class="field">
-            <span class="field-title">기타 세액</span>
-            <div class="field-row"><input id="otherTaxes" class="input" type="text" inputmode="numeric" value="0"/><span class="suffix">KRW</span></div>
+            <span class="field-title">국내 추가비용</span>
+            <div class="row-input"><input id="localCostKRW" class="input" type="text" inputmode="numeric" value="0" /><span class="suffix">KRW</span></div>
+            <p class="help-text">국내운송료, 통관수수료 등을 한 번에 입력해도 됩니다.</p>
           </label>
         </div>
 
-        <div class="mt-4 field">
-          <span class="field-title">HS CODE 검색</span>
-          <div class="hs-wrap">
-            <input id="hsSearch" class="input" type="text" inputmode="numeric" placeholder="예: 8504403010"/>
-            <div id="hsList" class="hs-list"></div>
+        <div class="calc-action">
+          <p class="muted">필수 입력만으로 계산됩니다. 더 정확한 계산은 상세 설정을 열어 조정하세요.</p>
+          <button id="calcBtn" class="btn btn-primary" type="button">계산하기</button>
+        </div>
+
+        <details class="advanced">
+          <summary>+ 상세 설정 열기</summary>
+          <div class="advanced-body">
+            <p class="advanced-title">환율 · 보험료</p>
+            <div class="field-grid">
+              <label class="field">
+                <span class="field-title">USD 과세환율</span>
+                <div class="row-input three">
+                  <input id="exchangeRate" class="input" type="text" inputmode="decimal" value="" placeholder="자동 조회 중" />
+                  <span class="suffix">KRW</span>
+                  <button id="loadFxBtn" class="btn" type="button">자동조회</button>
+                </div>
+                <span id="fxStatus" class="fx-status">관세환율을 불러오는 중입니다.</span>
+              </label>
+              <label class="field">
+                <span class="field-title">보험료</span>
+                <div class="row-input"><input id="insuranceUSD" class="input" type="text" inputmode="decimal" value="20" disabled /><span class="suffix">USD</span></div>
+                <label class="help-text" style="display:flex;align-items:center;gap:6px;margin-top:7px"><input id="autoInsurance" type="checkbox" checked /> 자동계산 사용</label>
+              </label>
+            </div>
+
+            <p class="advanced-title">HS CODE · 세율</p>
+            <div class="field-grid">
+              <label class="field">
+                <span class="field-title">HS CODE 검색</span>
+                <div class="hs-wrap">
+                  <input id="hsSearch" class="input" type="text" inputmode="numeric" placeholder="예: 8504403010" />
+                  <div id="hsList" class="hs-list"></div>
+                </div>
+                <p id="hsSelected" class="help-text">대표 HS CODE 데이터 기준입니다.</p>
+              </label>
+              <div class="field-grid" style="gap:10px">
+                <label class="field"><span class="field-title">관세율</span><div class="row-input"><input id="dutyRate" class="input" type="text" inputmode="decimal" value="8" /><span class="suffix">%</span></div></label>
+                <label class="field"><span class="field-title">부가세율</span><div class="row-input"><input id="vatRate" class="input" type="text" inputmode="decimal" value="10" /><span class="suffix">%</span></div></label>
+              </div>
+            </div>
+
+            <div id="businessAdvanced">
+              <p class="advanced-title">기업수입 부대비용</p>
+              <div class="field-grid three">
+                <label class="field"><span class="field-title">국내운송료</span><div class="row-input"><input id="domesticTruckKRW" class="input" type="text" inputmode="numeric" value="0" /><span class="suffix">KRW</span></div></label>
+                <label class="field"><span class="field-title">통관수수료</span><div class="row-input"><input id="clearanceFeeKRW" class="input" type="text" inputmode="numeric" value="0" /><span class="suffix">KRW</span></div></label>
+                <label class="field"><span class="field-title">창고료/검사비</span><div class="row-input"><input id="warehouseFeeKRW" class="input" type="text" inputmode="numeric" value="0" /><span class="suffix">KRW</span></div></label>
+              </div>
+            </div>
           </div>
-          <label class="check mt-2">
-            <input id="autoDuty" type="checkbox" checked/>
-            <span>HS 코드로 관세율 자동 적용</span>
-          </label>
-          <p id="hsSelected" class="text-[12px] text-gray-500 mt-1">대표 HS CODE 데이터 기준입니다. 정확한 신고 전에는 품목분류를 반드시 확인하세요.</p>
-        </div>
+        </details>
       </section>
 
-      <section class="card p-5 md:p-6 sticky-card">
-        <div class="kb-section-title">
+      <aside class="card section sticky">
+        <div class="section-title">
           <div>
             <h2>계산 결과</h2>
-            <p>예상 과세가격, 관세, 부가세, 총 납부세액을 확인하세요.</p>
+            <p id="resultLead">가장 중요한 금액만 먼저 보여드립니다.</p>
           </div>
         </div>
 
-        <div class="summary-grid">
-          <div class="summary-card">
-            <p class="summary-label"><span class="label-icon">CIF</span>총 과세가격</p>
-            <p id="cifUsd" class="summary-value">0.00</p>
-            <p id="cifKrw" class="summary-sub">환산 0 원</p>
+        <div class="result-main">
+          <p id="mainResultLabel" class="result-label">예상 관부가세</p>
+          <p id="mainTax" class="result-value">0 원</p>
+          <p id="mainSub" class="result-sub">필수 정보를 입력하면 자동 계산됩니다.</p>
+        </div>
+
+        <div class="result-grid">
+          <div class="result-card" id="totalCostCard">
+            <strong id="totalCostLabel">예상 총비용</strong>
+            <b id="totalCost">0 원</b>
+            <span id="totalCostSub">물품가격 + 배송비 + 예상 세금</span>
           </div>
-          <div class="summary-card">
-            <p class="summary-label"><span class="label-icon">면세</span>면세 기준</p>
-            <p id="threshold" class="summary-value">USD 200</p>
-            <p id="exemption" class="summary-sub">계산 대기</p>
-          </div>
-          <div class="summary-card">
-            <p class="summary-label"><span class="label-icon">관</span>관세</p>
-            <p id="dutyKrw" class="summary-value">0 원</p>
-            <p id="dutySub" class="summary-sub">관세율 8%</p>
-          </div>
-          <div class="summary-card">
-            <p class="summary-label"><span class="label-icon">부</span>부가세</p>
-            <p id="vatKrw" class="summary-value">0 원</p>
-            <p id="vatSub" class="summary-sub">부가세율 10%</p>
-          </div>
-          <div class="summary-card wide">
-            <p class="summary-label"><span class="label-icon">Σ</span>총 예상 납부세액</p>
-            <p id="totalTax" class="summary-value">0 원</p>
-            <p id="landedCost" class="summary-sub">도착원가 0 원</p>
+          <div class="result-card" id="thirdCard">
+            <strong id="thirdLabel">면세 가능 여부</strong>
+            <b id="thirdValue">계산 대기</b>
+            <span id="thirdSub">발송국가별 기준으로 추정합니다.</span>
           </div>
         </div>
 
-        <details open class="notice">
+        <details class="detail">
           <summary>계산 내역 보기</summary>
-          <ul class="list-disc ml-5">
-            <li>CIF(USD) = 물품가 + 운송료 + 보험</li>
-            <li>CIF(KRW) = CIF(USD) × 환율</li>
-            <li>관세 = CIF(KRW) × 관세율</li>
-            <li>부가세 = (CIF + 관세 + 기타세액) × 부가세율</li>
-          </ul>
+          <div class="detail-body">
+            <div class="line"><span>세금 계산 기준 금액</span><span id="cifLine">0 원</span></div>
+            <div class="line"><span>관세</span><span id="dutyLine">0 원</span></div>
+            <div class="line"><span>부가세</span><span id="vatLine">0 원</span></div>
+            <div class="line"><span id="extraLineLabel">추가 비용</span><span id="extraLine">0 원</span></div>
+            <div class="line"><span>적용 관세율</span><span id="rateLine">8%</span></div>
+          </div>
         </details>
 
-        <p class="text-xs text-gray-500 mt-3 text-left">※ 본 계산기는 예상 참고용입니다. 실제 통관 세액은 신고가격, 품목분류, 감면 여부, 고시환율, 세관 심사에 따라 달라질 수 있습니다.</p>
-      </section>
+        <div class="cta-box">
+          <strong>정확한 수입통관 비용이 필요하신가요?</strong>
+          <p>품목, HS CODE, 운송조건, 통관 가능 여부는 실제 서류 기준 검토가 필요합니다.</p>
+          <a class="btn btn-primary" href="http://pf.kakao.com/_baLgb/chat" target="_blank" rel="noopener">케이브릿지 문의하기</a>
+        </div>
+      </aside>
     </div>
 
-    <section id="guide" class="mt-6 card p-5 md:p-6">
-      <div class="kb-section-title">
+    <section id="guide" class="card section guide">
+      <div class="section-title">
         <div>
-          <h2>사용방법 및 안내</h2>
-          <p>계산 흐름과 자동 적용 기준을 실무 관점에서 정리했습니다.</p>
+          <h2>계산 기준 쉽게 보기</h2>
+          <p>고객이 헷갈리기 쉬운 용어는 쉬운 말로 정리했습니다.</p>
         </div>
       </div>
-      <div class="help-grid">
-        <details class="notice" open>
-          <summary>빠른 시작</summary>
-          <ol class="list-decimal ml-5">
-            <li><b>원산지/발송국가</b>를 선택합니다. 미국은 USD 200, 그 외 국가는 USD 150 기준입니다.</li>
-            <li><b>USD 과세환율</b>은 첨부된 공공데이터포털 서비스키로 관세청 API에서 자동 조회하며, 필요 시 직접 수정할 수 있습니다.</li>
-            <li><b>물품가격·운송료·보험료</b>를 USD 기준으로 입력합니다.</li>
-            <li><b>HS CODE 검색</b>에서 대표 코드를 선택하거나 관세율을 직접 입력합니다.</li>
-            <li>우측 결과 카드에서 <b>관세·부가세·총 세액·도착원가</b>를 확인합니다.</li>
-          </ol>
-        </details>
-        <details class="notice" open>
-          <summary>관세청 USD 과세환율 자동조회</summary>
-          <ul class="list-disc ml-5">
-            <li>첨부된 공공데이터포털 서비스키를 적용해 관세청_관세환율정보(GW) API에서 USD 수입 과세환율을 자동 조회합니다.</li>
-            <li>브라우저 보안 정책, API 호출 제한 또는 네트워크 제한으로 자동조회가 실패하면 유니패스 주간환율에서 확인한 값을 직접 입력하세요.</li>
-          </ul>
-        </details>
-        <details class="notice" open>
-          <summary>HS CODE 검색 & 관세율</summary>
-          <ul class="list-disc ml-5">
-            <li>검색은 숫자 기준으로 대표 코드가 제안됩니다.</li>
-            <li>실제 신고 전에는 관세법령정보포털, 관세사 또는 세관 품목분류를 통해 정확한 HS CODE를 확인해야 합니다.</li>
-            <li>FTA·협정세율·탄력세율 등은 별도 검토가 필요합니다.</li>
-          </ul>
-        </details>
-        <details class="notice">
-          <summary>보험료 자동계산</summary>
-          <ul class="list-disc ml-5">
-            <li>자동계산 ON: 물품가격 × 110% × 0.03%, 최소 USD 20 적용.</li>
-            <li>보험사, 화물 특성, 운송 조건에 따라 실제 보험료는 달라질 수 있습니다.</li>
-          </ul>
-        </details>
-        <details class="notice">
-          <summary>면세 기준</summary>
-          <ul class="list-disc ml-5">
-            <li>미국은 CIF USD 200 이하, 그 외 국가는 CIF USD 150 이하 기준으로 면세 추정 표시합니다.</li>
-            <li>목록통관 배제 품목, 과세대상 품목, 합산과세 등 예외가 있을 수 있습니다.</li>
-          </ul>
-        </details>
+      <div class="guide-grid">
+        <div class="guide-card"><strong>세금 계산 기준 금액</strong><p>물품가격, 운송료, 보험료를 합친 금액입니다. 실무에서는 CIF 과세가격이라고 부릅니다.</p></div>
+        <div class="guide-card"><strong>해외직구 면세 기준</strong><p>미국 발송은 USD 200, 그 외 국가는 USD 150 기준으로 면세 가능 여부를 추정합니다. 예외 품목은 별도 확인이 필요합니다.</p></div>
+        <div class="guide-card"><strong>기업수입 원가</strong><p>기업수입은 면세 여부보다 관부가세, 통관비, 국내운송료까지 포함한 총 수입원가 확인이 중요합니다.</p></div>
       </div>
     </section>
   </main>
 
-  <footer>© <span id="year"></span> KBRIDGE Customs Duty Calculator • Made by KBRIDGE</footer>
+  <footer>© <span id="year"></span> KBRIDGE Duty Calculator • Made by KBRIDGE</footer>
 
 <script>
 (function(){
   const HS_DATA = [
-    ["4202211010", 8, "가방류"],
-    ["4203101010", 13, "가죽 의류"],
-    ["6109101000", 13, "면 티셔츠"],
-    ["6203421000", 13, "면 바지"],
-    ["6403999000", 13, "신발류"],
-    ["8517130000", 0, "스마트폰"],
-    ["8471300000", 0, "노트북"],
-    ["8518300000", 8, "이어폰·헤드폰"],
-    ["8504403010", 8, "전원공급장치·어댑터"],
-    ["9503003910", 8, "완구류"],
-    ["3304991000", 8, "화장품류"],
-    ["3926909000", 8, "플라스틱 제품"],
-    ["7326909000", 8, "철강 기타 제품"],
-    ["9403609000", 8, "목제가구"],
-    ["9004100000", 8, "선글라스"],
-    ["9102110000", 8, "손목시계"],
-    ["2203000000", 30, "맥주"],
-    ["0901210000", 8, "볶은 커피"],
-    ["1806909010", 8, "초콜릿 제품"],
-    ["2106909099", 8, "기타 조제식품"]
+    ["4202211010",8,"가방류"],["4203101010",13,"가죽 의류"],["6109101000",13,"면 티셔츠"],["6203421000",13,"면 바지"],["6403999000",13,"신발류"],["8517130000",0,"스마트폰"],["8471300000",0,"노트북"],["8518300000",8,"이어폰·헤드폰"],["8504403010",8,"전원공급장치·어댑터"],["9503003910",8,"완구류"],["3304991000",8,"화장품류"],["3926909000",8,"플라스틱 제품"],["7326909000",8,"철강 기타 제품"],["9403609000",8,"목제가구"],["9004100000",8,"선글라스"],["9102110000",8,"손목시계"],["0901210000",8,"볶은 커피"],["1806909010",8,"초콜릿 제품"],["2106909099",8,"기타 조제식품"]
   ];
-
-  const $ = (id) => document.getElementById(id);
+  const $ = id => document.getElementById(id);
   const nfKRW = new Intl.NumberFormat("ko-KR", {maximumFractionDigits:0});
   const nfUSD = new Intl.NumberFormat("en-US", {minimumFractionDigits:2, maximumFractionDigits:2});
-  const toNumber = (v) => {
+  let mode = "express";
+
+  const toNumber = v => {
     const n = parseFloat(String(v ?? "").replace(/,/g,"").replace(/[^\d.]/g,""));
     return isNaN(n) ? 0 : n;
   };
-  const fmtKRW = (v) => nfKRW.format(Math.round(v));
-  const fmtUSD = (v) => nfUSD.format(v);
+  const fmtKRW = v => nfKRW.format(Math.round(v));
+  const fmtUSD = v => nfUSD.format(v);
   const fmtInput = (v, dec=true) => {
     const s = String(v ?? "").replace(/,/g,"").replace(/[^\d.]/g,"");
     if(!s) return "";
@@ -521,260 +366,184 @@
     return dec && parts.length > 1 ? `${intPart}.${parts.slice(1).join("")}` : intPart;
   };
 
-  const ids = ["exchangeRate","priceUSD","freightUSD","insuranceUSD","dutyRate","vatRate","otherTaxes"];
-  ids.forEach(id => {
-    const el = $(id);
-    el.addEventListener("input", () => {
-      el.value = fmtInput(el.value, id !== "otherTaxes" && id !== "exchangeRate");
-      compute();
+  function setMode(next){
+    mode = next;
+    document.querySelectorAll(".mode-btn").forEach(btn => {
+      const active = btn.dataset.mode === mode;
+      btn.classList.toggle("active", active);
+      btn.setAttribute("aria-selected", active ? "true" : "false");
     });
-  });
-
-  $("origin").addEventListener("change", compute);
-  $("autoInsurance").addEventListener("change", () => {
-    const checked = $("autoInsurance").checked;
-    $("insuranceUSD").disabled = checked;
-    $("insuranceLabel").textContent = checked ? "보험료 자동 계산값" : "보험료";
+    const business = mode === "business";
+    $("originField").classList.toggle("hidden", business);
+    $("incotermsField").classList.toggle("hidden", !business);
+    $("businessQuick").classList.toggle("hidden", !business);
+    $("businessAdvanced").classList.toggle("hidden", !business);
+    $("leadText").textContent = business ? "기업수입은 예상 관부가세와 수입원가를 중심으로 간단히 계산합니다." : "해외직구·특송은 면세 가능 여부와 예상 관부가세를 간단히 계산합니다.";
+    $("modeNotice").querySelector("p").textContent = business ? "처음에는 인보이스 금액, 운송료, 품목만 입력해도 됩니다. 국내 추가비용과 수량을 넣으면 원가 계산이 더 실무적으로 바뀝니다." : "처음에는 발송국가, 물품가격, 배송비, 품목만 입력하면 됩니다. 상세 설정은 필요할 때만 열어보세요.";
+    $("priceLabel").innerHTML = business ? "인보이스 금액 <span class='required'>*</span>" : "물품가격 <span class='required'>*</span>";
+    $("freightLabel").innerHTML = business ? "국제운송료 <span class='required'>*</span>" : "배송비/운송료 <span class='required'>*</span>";
+    $("priceHelp").textContent = business ? "Commercial Invoice 금액을 입력하세요." : "해외 쇼핑몰 결제금액 또는 구매금액을 입력하세요.";
+    $("mainResultLabel").textContent = business ? "예상 관부가세" : "예상 관부가세";
+    $("totalCostLabel").textContent = business ? "예상 수입원가" : "예상 총비용";
+    $("totalCostSub").textContent = business ? "물품가 + 국제운임 + 세금 + 국내 추가비용" : "물품가격 + 배송비 + 예상 세금";
+    $("thirdLabel").textContent = business ? "개당 예상 원가" : "면세 가능 여부";
+    $("thirdSub").textContent = business ? "수량 입력 시 자동 계산됩니다." : "발송국가별 기준으로 추정합니다.";
+    $("extraLineLabel").textContent = business ? "통관/국내 추가비용" : "기타 추가 비용";
     compute();
-  });
-  $("autoDuty").addEventListener("change", compute);
-  $("year").textContent = new Date().getFullYear();
-  $("loadFxBtn").addEventListener("click", loadUsdTaxFxRate);
+  }
 
-  const hsSearch = $("hsSearch");
-  const hsList = $("hsList");
-  hsSearch.addEventListener("input", () => {
-    const q = hsSearch.value.replace(/\D/g,"");
-    hsSearch.value = q;
-    hsList.innerHTML = "";
-    if(q.length < 2){
-      hsList.classList.remove("open");
-      compute();
-      return;
-    }
-    const matches = HS_DATA.filter(([code]) => code.startsWith(q)).slice(0, 20);
-    if(!matches.length){
-      hsList.classList.remove("open");
-      compute();
-      return;
-    }
-    matches.forEach(([code, rate, name]) => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.innerHTML = `<div style="font-weight:900;color:#10243e">${code} <span style="font-size:12px;color:#667085">· ${rate}%</span></div><div style="font-size:12px;color:#667085">${name}</div>`;
-      btn.addEventListener("click", () => {
-        hsSearch.value = code;
-        $("hsSelected").textContent = `[${code}] ${name} · 기본 관세율 ${rate}%`;
-        if($("autoDuty").checked){
-          $("dutyRate").value = String(rate);
-        }
-        hsList.classList.remove("open");
-        compute();
-      });
-      hsList.appendChild(btn);
-    });
-    hsList.classList.add("open");
+  function updateCategory(rate, hs, name){
+    $("dutyRate").value = String(rate);
+    $("hsSearch").value = hs || "";
+    $("hsSelected").textContent = hs ? `[${hs}] ${name} · 기본 관세율 ${rate}%` : "직접 입력 모드입니다.";
+    document.querySelectorAll(".cat-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.hs === hs));
     compute();
-  });
-  document.addEventListener("click", (e) => {
-    if(!e.target.closest(".hs-wrap")) hsList.classList.remove("open");
-  });
+  }
+
+  function compute(){
+    const exchangeRate = toNumber($("exchangeRate").value) || 0;
+    const priceUSD = toNumber($("priceUSD").value);
+    const freightUSD = toNumber($("freightUSD").value);
+    let insuranceUSD = toNumber($("insuranceUSD").value);
+    if($("autoInsurance").checked){
+      insuranceUSD = Math.max(20, priceUSD * 1.1 * 0.0003);
+      $("insuranceUSD").value = fmtInput(insuranceUSD.toFixed(2));
+      $("insuranceUSD").disabled = true;
+    }else{
+      $("insuranceUSD").disabled = false;
+    }
+    const dutyRate = toNumber($("dutyRate").value) / 100;
+    const vatRate = toNumber($("vatRate").value) / 100;
+    const cifUSD = priceUSD + freightUSD + insuranceUSD;
+    const cifKRW = cifUSD * exchangeRate;
+
+    let threshold = 0, isExempt = false;
+    if(mode === "express"){
+      const opt = $("origin").selectedOptions[0];
+      threshold = Number(opt.dataset.threshold || 150);
+      isExempt = cifUSD > 0 && cifUSD <= threshold;
+    }
+
+    const dutyKRW = isExempt ? 0 : cifKRW * dutyRate;
+    const vatBase = isExempt ? 0 : Math.max(0, cifKRW + dutyKRW);
+    const vatKRW = isExempt ? 0 : vatBase * vatRate;
+    const totalTax = dutyKRW + vatKRW;
+
+    const localQuick = mode === "business" ? toNumber($("localCostKRW").value) : 0;
+    const localDetail = mode === "business" ? toNumber($("domesticTruckKRW").value) + toNumber($("clearanceFeeKRW").value) + toNumber($("warehouseFeeKRW").value) : 0;
+    const extraCost = localQuick + localDetail;
+    const totalCost = cifKRW + totalTax + extraCost;
+    const qty = Math.max(1, toNumber($("quantity").value) || 1);
+    const unitCost = totalCost / qty;
+
+    $("mainTax").textContent = `${fmtKRW(totalTax)} 원`;
+    $("mainSub").textContent = exchangeRate <= 0 ? "환율 자동조회 실패 시 직접 입력해 주세요." : (mode === "express" ? "해외직구·특송 기준 예상 세액입니다." : "기업수입 정식 신고 전 참고용 예상 세액입니다.");
+    $("totalCost").textContent = `${fmtKRW(totalCost)} 원`;
+    if(mode === "business"){
+      $("thirdValue").textContent = `${fmtKRW(unitCost)} 원`;
+      $("thirdSub").textContent = `${qty}개 기준 개당 예상 원가입니다.`;
+    }else{
+      $("thirdValue").textContent = cifUSD <= 0 ? "계산 대기" : (isExempt ? "면세 추정" : "과세 추정");
+      $("thirdSub").textContent = cifUSD <= 0 ? "발송국가와 금액을 입력하세요." : `기준 금액: USD ${threshold}`;
+    }
+    $("cifLine").textContent = `${fmtKRW(cifKRW)} 원 (${fmtUSD(cifUSD)} USD)`;
+    $("dutyLine").textContent = `${fmtKRW(dutyKRW)} 원`;
+    $("vatLine").textContent = `${fmtKRW(vatKRW)} 원`;
+    $("extraLine").textContent = `${fmtKRW(extraCost)} 원`;
+    $("rateLine").textContent = `${toNumber($("dutyRate").value)}%`;
+
+    const badge = $("statusBadge");
+    badge.className = "badge";
+    if(cifUSD <= 0){ badge.textContent = "계산 대기"; }
+    else if(mode === "express" && isExempt){ badge.textContent = "면세 추정"; badge.classList.add("ok"); }
+    else { badge.textContent = mode === "business" ? "기업수입 계산" : "과세 추정"; badge.classList.add("warn"); }
+  }
 
   function setFxStatus(message, type=""){
     const el = $("fxStatus");
     el.textContent = message;
-    el.className = `fx-inline-status ${type}`.trim();
+    el.className = `fx-status ${type}`.trim();
   }
 
-  const RATE_CACHE_KEY = "kb_unipass_usdkrw_v2";
+  const RATE_CACHE_KEY = "kb_unipass_usdkrw_simple_v1";
   const KCS_TRIF_API_KEY = "d79bdb165fed44fab4874971b2474f6683dc517dc7b2c8085746b6ba450f63ec";
   const KCS_TRIF_API_URL = "https://apis.data.go.kr/1220000/retrieveTrifFxrtInfo/getRetrieveTrifFxrtInfo";
-
-  function todayISO(){
-    const d = new Date();
-    const y = d.getFullYear();
-    const m = String(d.getMonth()+1).padStart(2,"0");
-    const day = String(d.getDate()).padStart(2,"0");
-    return `${y}-${m}-${day}`;
-  }
-
-  function yyyymmdd(date){
-    const y = date.getFullYear();
-    const m = String(date.getMonth()+1).padStart(2,"0");
-    const d = String(date.getDate()).padStart(2,"0");
-    return `${y}${m}${d}`;
-  }
-
-  function toISODate(yyyymmddValue){
-    const v = String(yyyymmddValue || "").replace(/[^0-9]/g,"");
-    if(v.length !== 8) return todayISO();
-    return `${v.slice(0,4)}-${v.slice(4,6)}-${v.slice(6,8)}`;
-  }
-
-  function saveRateCache(rate, date){
-    try{ localStorage.setItem(RATE_CACHE_KEY, JSON.stringify({rate, date, ts:Date.now()})); }catch(_){}
-  }
-
-  function loadRateCache(){
-    try{
-      const raw = localStorage.getItem(RATE_CACHE_KEY);
-      if(!raw) return null;
-      const cached = JSON.parse(raw);
-      if(!cached || !cached.rate) return null;
-      return cached;
-    }catch(_){ return null; }
-  }
-
-  async function fetchTextWithTimeout(url, ms=12000){
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), ms);
-    try{
-      const res = await fetch(url, {signal: ctrl.signal, cache:"no-store"});
-      if(!res.ok) throw new Error(`HTTP ${res.status}`);
-      return await res.text();
-    }finally{
-      clearTimeout(timer);
-    }
-  }
-
-  function buildKcsApiUrl(aplyBgnDt){
-    const qs = new URLSearchParams({
-      serviceKey: KCS_TRIF_API_KEY,
-      aplyBgnDt,
-      weekFxrtTpcd: "2",
-      numOfRows: "999",
-      pageNo: "1"
-    });
-    return `${KCS_TRIF_API_URL}?${qs.toString()}`;
-  }
-
-  async function fetchKcsApiText(url){
-    try{
-      return await fetchTextWithTimeout(url, 12000);
-    }catch(directErr){
-      // 일부 정적 호스팅/브라우저에서 공공데이터 API CORS가 막힐 수 있어 프록시를 1회 보조 시도합니다.
-      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-      try{
-        return await fetchTextWithTimeout(proxyUrl, 12000);
-      }catch(proxyErr){
-        throw new Error(`공공데이터 API 호출 실패: ${directErr.message || directErr}`);
-      }
-    }
-  }
-
+  function yyyymmdd(date){return `${date.getFullYear()}${String(date.getMonth()+1).padStart(2,"0")}${String(date.getDate()).padStart(2,"0")}`;}
+  function toISODate(v){v=String(v||"").replace(/[^0-9]/g,"");return v.length===8?`${v.slice(0,4)}-${v.slice(4,6)}-${v.slice(6,8)}`:"최근 조회";}
+  function saveRateCache(rate,date){try{localStorage.setItem(RATE_CACHE_KEY,JSON.stringify({rate,date,ts:Date.now()}));}catch(_){}}
+  function loadRateCache(){try{return JSON.parse(localStorage.getItem(RATE_CACHE_KEY)||"null");}catch(_){return null;}}
+  async function fetchTextWithTimeout(url,ms=12000){const ctrl=new AbortController();const timer=setTimeout(()=>ctrl.abort(),ms);try{const res=await fetch(url,{signal:ctrl.signal,cache:"no-store"});if(!res.ok)throw new Error(`HTTP ${res.status}`);return await res.text();}finally{clearTimeout(timer);}}
+  function buildKcsApiUrl(aplyBgnDt){const qs=new URLSearchParams({serviceKey:KCS_TRIF_API_KEY,aplyBgnDt,weekFxrtTpcd:"2",numOfRows:"999",pageNo:"1"});return `${KCS_TRIF_API_URL}?${qs.toString()}`;}
+  async function fetchKcsApiText(url){try{return await fetchTextWithTimeout(url,12000);}catch(e){return await fetchTextWithTimeout(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,12000);}}
   function parseKcsUsdTaxFx(xmlText){
-    const doc = new DOMParser().parseFromString(xmlText, "text/xml");
-    const parseError = doc.querySelector("parsererror");
-    if(parseError) throw new Error("환율 XML 파싱 실패");
-
-    const errMsg = doc.querySelector("errMsg, returnAuthMsg")?.textContent?.trim();
-    const resultMsg = doc.querySelector("resultMsg")?.textContent?.trim();
-    const resultCode = doc.querySelector("resultCode")?.textContent?.trim();
-    if(errMsg && !/정상|NORMAL/i.test(errMsg)) throw new Error(errMsg);
-    if(resultCode && resultCode !== "00" && resultMsg) throw new Error(resultMsg);
-
-    const items = Array.from(doc.querySelectorAll("item"));
-    let usdItem = items.find(item => (item.querySelector("currSgn")?.textContent || "").trim().toUpperCase() === "USD");
-
-    // 응답 구조가 item 태그 없이 내려오는 경우를 대비한 보조 탐색
-    if(!usdItem){
-      const candidates = Array.from(doc.querySelectorAll("*"))
-        .filter(node => /USD/i.test(node.textContent || "") && /fxrt/i.test(node.parentNode?.textContent || ""));
-      usdItem = candidates[0]?.parentNode || null;
-    }
-
+    const doc=new DOMParser().parseFromString(xmlText,"text/xml");
+    if(doc.querySelector("parsererror")) throw new Error("환율 XML 파싱 실패");
+    const items=Array.from(doc.querySelectorAll("item"));
+    const usdItem=items.find(item=>(item.querySelector("currSgn")?.textContent||"").trim().toUpperCase()==="USD");
     if(!usdItem) throw new Error("USD 환율 데이터 없음");
-    const rateText = usdItem.querySelector("fxrt")?.textContent || "";
-    const rate = parseFloat(rateText.replace(/,/g,""));
-    const date = usdItem.querySelector("aplyBgnDt")?.textContent || "";
-    if(!isFinite(rate) || rate < 500 || rate > 5000) throw new Error("USD 과세환율 값 확인 실패");
-    return { rate: Math.round(rate * 100) / 100, date: toISODate(date) };
+    const rate=parseFloat((usdItem.querySelector("fxrt")?.textContent||"").replace(/,/g,""));
+    const date=usdItem.querySelector("aplyBgnDt")?.textContent || "";
+    if(!isFinite(rate)||rate<500||rate>5000) throw new Error("USD 과세환율 값 확인 실패");
+    return {rate:Math.round(rate*100)/100,date:toISODate(date)};
   }
-
   async function loadUsdTaxFxRate(){
-    setFxStatus("관세청 USD 수입 과세환율 조회 중...", "");
-    const cached = loadRateCache();
-    if(cached && cached.rate){
-      $("exchangeRate").value = fmtInput(String(cached.rate), true);
-      setFxStatus(`임시 적용 · ${fmtInput(String(cached.rate), true)}원 · ${cached.date || "최근 조회"}`, "ok");
-      compute();
-    }
-
+    setFxStatus("관세청 USD 과세환율 조회 중...","");
+    const cached=loadRateCache();
+    if(cached?.rate){$("exchangeRate").value=fmtInput(String(cached.rate),true);setFxStatus(`임시 적용 · ${fmtInput(String(cached.rate),true)}원 · ${cached.date||"최근 조회"}`,"ok");compute();}
     try{
-      let lastErr = null;
-      for(let i=0; i<21; i++){
-        const d = new Date();
-        d.setDate(d.getDate() - i);
-        const aplyBgnDt = yyyymmdd(d);
+      let lastErr=null;
+      for(let i=0;i<21;i++){
+        const d=new Date(); d.setDate(d.getDate()-i);
         try{
-          const apiUrl = buildKcsApiUrl(aplyBgnDt);
-          const xml = await fetchKcsApiText(apiUrl);
-          const parsed = parseKcsUsdTaxFx(xml);
-          $("exchangeRate").value = fmtInput(String(parsed.rate), true);
-          saveRateCache(parsed.rate, parsed.date || toISODate(aplyBgnDt));
-          setFxStatus(`자동 적용 완료 · ${fmtInput(String(parsed.rate), true)}원 · 기준일 ${parsed.date || toISODate(aplyBgnDt)}`, "ok");
-          compute();
-          return;
-        }catch(err){
-          lastErr = err;
-        }
+          const xml=await fetchKcsApiText(buildKcsApiUrl(yyyymmdd(d)));
+          const parsed=parseKcsUsdTaxFx(xml);
+          $("exchangeRate").value=fmtInput(String(parsed.rate),true);
+          saveRateCache(parsed.rate,parsed.date);
+          setFxStatus(`자동 적용 완료 · ${fmtInput(String(parsed.rate),true)}원 · 기준일 ${parsed.date}`,"ok");
+          compute(); return;
+        }catch(err){lastErr=err;}
       }
-      throw lastErr || new Error("최근 21일 내 USD 과세환율 데이터 없음");
+      throw lastErr || new Error("최근 환율 데이터 없음");
     }catch(err){
-      if(cached && cached.rate){
-        setFxStatus(`조회 실패 · 캐시값 적용 (${cached.date || "최근 조회"})`, "warn");
-      }else{
-        setFxStatus(`자동조회 실패 · 환율을 직접 입력해 주세요.`, "warn");
-      }
+      if(cached?.rate) setFxStatus(`조회 실패 · 캐시값 적용 (${cached.date||"최근 조회"})`,"warn");
+      else setFxStatus("자동조회 실패 · 환율을 직접 입력해 주세요.","warn");
       compute();
     }
   }
 
-  function compute(){
-    const origin = $("origin");
-    const threshold = Number(origin.selectedOptions[0].dataset.threshold || 150);
-    const exchangeRate = toNumber($("exchangeRate").value);
-    const priceUSD = toNumber($("priceUSD").value);
-    const freightUSD = toNumber($("freightUSD").value);
+  ["exchangeRate","priceUSD","freightUSD","insuranceUSD","dutyRate","vatRate","quantity","localCostKRW","domesticTruckKRW","clearanceFeeKRW","warehouseFeeKRW"].forEach(id=>{
+    const el=$(id); if(!el) return;
+    el.addEventListener("input",()=>{el.value=fmtInput(el.value, id!=="quantity" && !id.endsWith("KRW")); compute();});
+  });
+  ["origin","incoterms"].forEach(id=>$(id).addEventListener("change",compute));
+  $("autoInsurance").addEventListener("change",compute);
+  $("calcBtn").addEventListener("click",compute);
+  $("loadFxBtn").addEventListener("click",loadUsdTaxFxRate);
+  document.querySelectorAll(".mode-btn").forEach(btn=>btn.addEventListener("click",()=>setMode(btn.dataset.mode)));
+  $("category").addEventListener("change",e=>{
+    const opt=e.target.selectedOptions[0];
+    if(opt.value!=="custom") updateCategory(opt.value,opt.dataset.hs,opt.dataset.name);
+  });
+  document.querySelectorAll(".cat-btn").forEach(btn=>btn.addEventListener("click",()=>updateCategory(btn.dataset.rate,btn.dataset.hs,btn.dataset.name)));
 
-    let insuranceUSD;
-    if($("autoInsurance").checked){
-      insuranceUSD = Math.max(20, priceUSD * 1.1 * 0.0003);
-      $("insuranceUSD").value = fmtInput(insuranceUSD.toFixed(2));
-    }else{
-      insuranceUSD = toNumber($("insuranceUSD").value);
-    }
-
-    const dutyRate = toNumber($("dutyRate").value) / 100;
-    const vatRate = toNumber($("vatRate").value) / 100;
-    const otherTaxes = toNumber($("otherTaxes").value);
-
-    const cifUSD = priceUSD + freightUSD + insuranceUSD;
-    const cifKRW = cifUSD * exchangeRate;
-    const isExempt = cifUSD > 0 && cifUSD <= threshold;
-
-    const dutyKRW = isExempt ? 0 : cifKRW * dutyRate;
-    const vatBase = isExempt ? 0 : Math.max(0, cifKRW + dutyKRW + otherTaxes);
-    const vatKRW = isExempt ? 0 : vatBase * vatRate;
-    const totalTax = dutyKRW + vatKRW + (isExempt ? 0 : otherTaxes);
-    const landedCost = cifKRW + totalTax;
-
-    $("cifUsd").textContent = `${fmtUSD(cifUSD)} USD`;
-    $("cifKrw").textContent = `환산 ${fmtKRW(cifKRW)} 원`;
-    $("threshold").textContent = `USD ${threshold}`;
-    $("exemption").textContent = cifUSD <= 0 ? "계산 대기" : (isExempt ? "면세 추정 구간입니다." : "과세 대상 구간입니다.");
-    $("dutyKrw").textContent = `${fmtKRW(dutyKRW)} 원`;
-    $("dutySub").textContent = `관세율 ${toNumber($("dutyRate").value)}%`;
-    $("vatKrw").textContent = `${fmtKRW(vatKRW)} 원`;
-    $("vatSub").textContent = `부가세율 ${toNumber($("vatRate").value)}%`;
-    $("totalTax").textContent = `${fmtKRW(totalTax)} 원`;
-    $("landedCost").textContent = `도착원가 ${fmtKRW(landedCost)} 원`;
-
-    const status = $("taxStatus");
-    status.className = "badge " + (isExempt ? "ok" : (cifUSD > 0 ? "warn" : ""));
-    status.textContent = cifUSD <= 0 ? "계산 대기" : (isExempt ? "면세 추정" : "과세 추정");
-  }
-
+  const hsSearch=$("hsSearch"), hsList=$("hsList");
+  hsSearch.addEventListener("input",()=>{
+    const q=hsSearch.value.replace(/\D/g,""); hsSearch.value=q; hsList.innerHTML="";
+    if(q.length<2){hsList.classList.remove("open"); return;}
+    const matches=HS_DATA.filter(([code])=>code.startsWith(q)).slice(0,20);
+    if(!matches.length){hsList.classList.remove("open"); return;}
+    matches.forEach(([code,rate,name])=>{
+      const btn=document.createElement("button"); btn.type="button";
+      btn.innerHTML=`<div style="font-weight:900;color:#10243e">${code} <span style="font-size:12px;color:#667085">· ${rate}%</span></div><div style="font-size:12px;color:#667085">${name}</div>`;
+      btn.addEventListener("click",()=>{updateCategory(rate,code,name);hsList.classList.remove("open");});
+      hsList.appendChild(btn);
+    });
+    hsList.classList.add("open");
+  });
+  document.addEventListener("click",e=>{if(!e.target.closest(".hs-wrap")) hsList.classList.remove("open");});
+  $("year").textContent=new Date().getFullYear();
+  setMode("express");
+  updateCategory(8,"8504403010","일반 전자제품");
   loadUsdTaxFxRate();
   compute();
 })();
